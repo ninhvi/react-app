@@ -2,20 +2,18 @@
 FROM node:20.18.1 AS development
 
 WORKDIR /app
-
 COPY ./package*.json /app/
-RUN npm install 
+RUN npm install
 COPY . .
 
 # Build project
-FROM development AS build
 RUN npm run build
 
-# Stage 2: Production (Nginx Environment)
+# Stage 2: Nginx (Production Environment)
 FROM nginx:stable-alpine
 
-COPY --from=build /app/build /usr/share/nginx/html
-COPY ./nginx.conf /etc/nginx/nginx.conf
+# Copy build folder from development stage
+COPY --from=development /app/build /usr/share/nginx/html
 
-# Expose cổng 80
+# Expose port 80
 EXPOSE 80
