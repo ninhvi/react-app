@@ -8,6 +8,7 @@ COPY . .
 
 # Build project
 RUN npm run build
+RUN ls -al /app/build
 
 # Stage 2: Nginx (Production Environment)
 FROM nginx:stable-alpine
