@@ -9,7 +9,7 @@ COPY . .
 
 # Build project
 FROM development AS build
-RUN npm build
+RUN npm run build
 
 # Stage 2: Production (Nginx Environment)
 FROM nginx:stable-alpine
