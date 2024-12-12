@@ -14,7 +14,7 @@ RUN npm run build
 # Stage 2: Production (Nginx Environment)
 FROM nginx:stable-alpine
 
-COPY --from=dist /app/dist /usr/share/nginx/html
+COPY --from=build /app/build /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/sites-available/default
 
 # Expose cổng 80
