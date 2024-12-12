@@ -1,20 +1,30 @@
-# Stage 1: Development (Node.js Environment)
-FROM node:20.18.1 AS development
+# Sử dụng image Node.js để xây dựng ứng dụng React
+FROM node:16 AS build
 
+# Chuyển đến thư mục làm việc của ứng dụng
 WORKDIR /app
-COPY ./package*.json /app/
+
+# Sao chép package.json và package-lock.json vào thư mục làm việc
+COPY package*.json ./
+
+# Cài đặt các phụ thuộc
 RUN npm install
+
+# Sao chép toàn bộ mã nguồn vào container
 COPY . .
 
-# Build project
+# Xây dựng ứng dụng React
 RUN npm run build
-RUN ls -al /app/build
 
-# Stage 2: Nginx (Production Environment)
-FROM nginx:stable-alpine
+# Chạy Nginx để phục vụ ứng dụng
+FROM nginx:alpine
 
-# Copy build folder from development stage
-COPY --from=development /app/build /usr/share/nginx/html
+# Sao chép các file đã build vào thư mục của Nginx
+COPY --from=build /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expose port 80
+# Mở cổng 80
 EXPOSE 80
+
+# Khởi động Nginx
+CMD ["nginx", "-g", "daemon off;"]
